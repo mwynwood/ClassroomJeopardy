@@ -1,6 +1,8 @@
 # Classroom Jeopardy
 A simple Jeopardy style game for use in the classroom.
 
+https://mwynwood.github.io/ClassroomJeopardy/ClassroomJeopardy.html
+
 It uses JSON files for questions, in this format:
 <pre>
 {
