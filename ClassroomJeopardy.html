@@ -432,6 +432,7 @@
                 <div class="modal-controls">
                     <button onclick="showAnswer()" id="showAnswerBtn">Show Answer</button>
                     <div id="playerButtons"></div>
+                    <button onclick="markWrong()" class="btn-warning" id="markWrongBtn" style="display: none;">No One Got It</button>
                     <button onclick="closeModal()" class="btn-secondary">Close</button>
                 </div>
             </div>
@@ -581,6 +582,7 @@
             document.getElementById('modalAnswer').textContent = `Answer: ${currentQuestion.answer}`;
             document.getElementById('modalAnswer').style.display = 'none';
             document.getElementById('showAnswerBtn').style.display = 'block';
+            document.getElementById('markWrongBtn').style.display = 'none';
             
             // Create player buttons
             const playerButtons = document.getElementById('playerButtons');
@@ -600,6 +602,7 @@
         function showAnswer() {
             document.getElementById('modalAnswer').style.display = 'block';
             document.getElementById('showAnswerBtn').style.display = 'none';
+            document.getElementById('markWrongBtn').style.display = 'block';
         }
 
         function awardPoints(playerIndex, points) {
@@ -620,8 +623,24 @@
             closeModal();
         }
 
+        function markWrong() {
+            // Mark question as used without awarding points
+            const questionId = `${currentQuestion.categoryIndex}-${currentQuestion.questionIndex}`;
+            usedQuestions.add(questionId);
+            
+            // Mark cell as used
+            const cell = document.querySelector(`[data-category="${currentQuestion.categoryIndex}"][data-question="${currentQuestion.questionIndex}"]`);
+            if (cell) {
+                cell.classList.add('used');
+                cell.onclick = null;
+            }
+            
+            closeModal();
+        }
+
         function closeModal() {
             document.getElementById('questionModal').style.display = 'none';
+            document.getElementById('markWrongBtn').style.display = 'none';
             currentQuestion = null;
         }
 
