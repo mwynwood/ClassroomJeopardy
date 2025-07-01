@@ -1,0 +1,54 @@
+{
+  "categories": [
+    {
+      "name": "Networking",
+      "questions": [
+        { "points": 100, "question": "This command shows your computer's IP address and network configuration.", "answer": "ipconfig" },
+        { "points": 200, "question": "This command tests connectivity to another device or website.", "answer": "ping" },
+        { "points": 300, "question": "This command shows the route data packets take to a destination.", "answer": "tracert" },
+        { "points": 400, "question": "This command shows active network connections and ports.", "answer": "netstat" },
+        { "points": 500, "question": "This command displays your computer’s MAC address.", "answer": "getmac" }
+      ]
+    },
+    {
+      "name": "File Management",
+      "questions": [
+        { "points": 100, "question": "This command creates a new folder.", "answer": "mkdir" },
+        { "points": 200, "question": "This command deletes a folder (only if it's empty).", "answer": "rmdir" },
+        { "points": 300, "question": "This command copies a file from one place to another.", "answer": "copy" },
+        { "points": 400, "question": "This command moves a file from one location to another.", "answer": "move" },
+        { "points": 500, "question": "This command navigates to the parent directory.", "answer": "cd .." }
+      ]
+    },
+    {
+      "name": "System Tools",
+      "questions": [
+        { "points": 100, "question": "This command clears the screen in Command Prompt.", "answer": "cls" },
+        { "points": 200, "question": "This command closes the Command Prompt window.", "answer": "exit" },
+        { "points": 300, "question": "This command shows a list of currently running processes.", "answer": "tasklist" },
+        { "points": 400, "question": "This command ends a task using its name or PID.", "answer": "taskkill" },
+        { "points": 500, "question": "This command scans and repairs corrupted system files.", "answer": "sfc /scannow" }
+      ]
+    },
+    {
+      "name": "Disk and System Info",
+      "questions": [
+        { "points": 100, "question": "This command shows the name of your computer.", "answer": "hostname" },
+        { "points": 200, "question": "This command displays the currently logged-in user.", "answer": "whoami" },
+        { "points": 300, "question": "Use this to see general information about your system.", "answer": "systeminfo" },
+        { "points": 400, "question": "This scans a hard drive for file system errors.", "answer": "chkdsk" },
+        { "points": 500, "question": "This command opens the Disk Cleanup utility to remove unnecessary files and free up space.", "answer": "cleanmgr" }
+      ]
+    },
+    {
+      "name": "Wildcard",
+      "questions": [
+        { "points": 100, "question": "This command lists the contents of a folder.", "answer": "dir" },
+        { "points": 200, "question": "Use this to delete one or more files.", "answer": "del" },
+        { "points": 300, "question": "This command is used to change the current directory.", "answer": "cd" },
+        { "points": 400, "question": "This command shows you where you are on the file system.", "answer": "pwd" },
+        { "points": 500, "question": "Use this command to open the Microsoft System Configuration utility for managing startup and boot options.", "answer": "msconfig" }
+      ]
+    }
+  ]
+}
