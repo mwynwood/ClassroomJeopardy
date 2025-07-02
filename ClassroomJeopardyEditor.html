@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz JSON Generator</title>
+    <title>Jeopardy Editor</title>
     <style>
         * {
             margin: 0;
@@ -241,7 +242,7 @@
 <body>
     <div class="container">
         <div class="panel">
-            <h1>Quiz Generator</h1>
+            <h1>Jeopardy Editor</h1>
             
             <div class="form-group">
                 <label for="categoryName">Category Name</label>
@@ -266,9 +267,15 @@
             <button class="btn" onclick="addQuestion()">Add Question</button>
             <button class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
             <button class="btn btn-success" onclick="loadSampleData()">Load Sample Data</button>
+            
+            <div class="form-group" style="margin-top: 30px;">
+                <label for="fileInput">Load JSON File</label>
+                <input type="file" id="fileInput" accept=".json" onchange="loadJSONFile(event)" 
+                       style="padding: 8px; border: 2px dashed #667eea; background: #f8f9fa;">
+            </div>
 
             <div class="stats">
-                <div>Quiz Statistics</div>
+                <div>Jeopardy Statistics</div>
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-number" id="categoryCount">0</div>
@@ -287,10 +294,10 @@
         </div>
 
         <div class="panel">
-            <h2>Quiz Preview</h2>
+            <h2>Jeopardy Preview</h2>
             
             <div id="quizPreview">
-                <p style="text-align: center; color: #666; font-style: italic;">No questions added yet. Start building your quiz!</p>
+                <p style="text-align: center; color: #666; font-style: italic;">No questions added yet. Start building your Jeopardy game!</p>
             </div>
 
             <h2 style="margin-top: 30px;">JSON Output</h2>
@@ -402,7 +409,7 @@
             const preview = document.getElementById('quizPreview');
             
             if (quizData.categories.length === 0) {
-                preview.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No questions added yet. Start building your quiz!</p>';
+                preview.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No questions added yet. Start building your Jeopardy game!</p>';
                 return;
             }
 
