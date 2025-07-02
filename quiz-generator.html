@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz JSON Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            height: calc(100vh - 40px);
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            text-align: center;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+        }
+
+        .category-item {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .category-name {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 3px solid #764ba2;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .question-content {
+            flex: 1;
+        }
+
+        .question-points {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .question-answer {
+            color: #666;
+            font-style: italic;
+        }
+
+        .json-output {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .export-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .stats {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel">
+            <h1>Quiz Generator</h1>
+            
+            <div class="form-group">
+                <label for="categoryName">Category Name</label>
+                <input type="text" id="categoryName" placeholder="e.g., Science, History, Sports">
+            </div>
+
+            <div class="form-group">
+                <label for="questionText">Question</label>
+                <textarea id="questionText" placeholder="Enter your question here..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="questionAnswer">Answer</label>
+                <input type="text" id="questionAnswer" placeholder="Enter the correct answer">
+            </div>
+
+            <div class="form-group">
+                <label for="questionPoints">Points</label>
+                <input type="number" id="questionPoints" value="100" min="1" step="50">
+            </div>
+
+            <button class="btn" onclick="addQuestion()">Add Question</button>
+            <button class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+            <button class="btn btn-success" onclick="loadSampleData()">Load Sample Data</button>
+
+            <div class="stats">
+                <div>Quiz Statistics</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="categoryCount">0</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="questionCount">0</div>
+                        <div class="stat-label">Questions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalPoints">0</div>
+                        <div class="stat-label">Total Points</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Quiz Preview</h2>
+            
+            <div id="quizPreview">
+                <p style="text-align: center; color: #666; font-style: italic;">No questions added yet. Start building your quiz!</p>
+            </div>
+
+            <h2 style="margin-top: 30px;">JSON Output</h2>
+            <div class="json-output" id="jsonOutput">
+{
+  "categories": []
+}
+            </div>
+
+            <div class="export-section">
+                <button class="btn btn-success" onclick="downloadJSON()">Download JSON File</button>
+                <button class="btn" onclick="copyToClipboard()">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let quizData = {
+            categories: []
+        };
+
+        function addQuestion() {
+            const categoryName = document.getElementById('categoryName').value.trim();
+            const questionText = document.getElementById('questionText').value.trim();
+            const questionAnswer = document.getElementById('questionAnswer').value.trim();
+            const questionPoints = parseInt(document.getElementById('questionPoints').value);
+
+            if (!categoryName || !questionText || !questionAnswer || !questionPoints) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Find or create category
+            let category = quizData.categories.find(cat => cat.name === categoryName);
+            if (!category) {
+                category = {
+                    name: categoryName,
+                    questions: []
+                };
+                quizData.categories.push(category);
+            }
+
+            // Add question
+            category.questions.push({
+                points: questionPoints,
+                question: questionText,
+                answer: questionAnswer
+            });
+
+            // Sort questions by points
+            category.questions.sort((a, b) => a.points - b.points);
+
+            updateDisplay();
+            clearQuestionForm();
+        }
+
+        function clearQuestionForm() {
+            document.getElementById('questionText').value = '';
+            document.getElementById('questionAnswer').value = '';
+            document.getElementById('questionPoints').value = '100';
+        }
+
+        function clearForm() {
+            document.getElementById('categoryName').value = '';
+            clearQuestionForm();
+        }
+
+        function deleteQuestion(categoryIndex, questionIndex) {
+            quizData.categories[categoryIndex].questions.splice(questionIndex, 1);
+            
+            // Remove category if no questions left
+            if (quizData.categories[categoryIndex].questions.length === 0) {
+                quizData.categories.splice(categoryIndex, 1);
+            }
+            
+            updateDisplay();
+        }
+
+        function loadSampleData() {
+            quizData = {
+                categories: [
+                    {
+                        name: "Science",
+                        questions: [
+                            {points: 100, question: "What is H2O?", answer: "Water"},
+                            {points: 200, question: "What planet is closest to the sun?", answer: "Mercury"},
+                            {points: 300, question: "What gas do plants absorb?", answer: "Carbon Dioxide"}
+                        ]
+                    },
+                    {
+                        name: "History",
+                        questions: [
+                            {points: 100, question: "Who was the first US President?", answer: "George Washington"},
+                            {points: 200, question: "In what year did WWII end?", answer: "1945"}
+                        ]
+                    }
+                ]
+            };
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            updatePreview();
+            updateJSON();
+            updateStats();
+        }
+
+        function updatePreview() {
+            const preview = document.getElementById('quizPreview');
+            
+            if (quizData.categories.length === 0) {
+                preview.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No questions added yet. Start building your quiz!</p>';
+                return;
+            }
+
+            let html = '';
+            quizData.categories.forEach((category, catIndex) => {
+                html += `
+                    <div class="category-item">
+                        <div class="category-header">
+                            <div class="category-name">${category.name}</div>
+                            <button class="btn-delete" onclick="deleteCategory(${catIndex})">Delete Category</button>
+                        </div>
+                `;
+                
+                category.questions.forEach((question, qIndex) => {
+                    html += `
+                        <div class="question-item">
+                            <div class="question-content">
+                                <div class="question-text">${question.question}</div>
+                                <div class="question-answer">Answer: ${question.answer}</div>
+                            </div>
+                            <div class="question-points">${question.points}</div>
+                            <button class="btn-delete" onclick="deleteQuestion(${catIndex}, ${qIndex})" style="margin-left: 10px;">×</button>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+            });
+            
+            preview.innerHTML = html;
+        }
+
+        function deleteCategory(categoryIndex) {
+            quizData.categories.splice(categoryIndex, 1);
+            updateDisplay();
+        }
+
+        function updateJSON() {
+            const jsonOutput = document.getElementById('jsonOutput');
+            jsonOutput.textContent = JSON.stringify(quizData, null, 2);
+        }
+
+        function updateStats() {
+            const categoryCount = quizData.categories.length;
+            const questionCount = quizData.categories.reduce((total, cat) => total + cat.questions.length, 0);
+            const totalPoints = quizData.categories.reduce((total, cat) => 
+                total + cat.questions.reduce((catTotal, q) => catTotal + q.points, 0), 0);
+
+            document.getElementById('categoryCount').textContent = categoryCount;
+            document.getElementById('questionCount').textContent = questionCount;
+            document.getElementById('totalPoints').textContent = totalPoints;
+        }
+
+        function downloadJSON() {
+            const dataStr = JSON.stringify(quizData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'quiz-data.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        function copyToClipboard() {
+            const jsonText = JSON.stringify(quizData, null, 2);
+            navigator.clipboard.writeText(jsonText).then(() => {
+                alert('JSON copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = jsonText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('JSON copied to clipboard!');
+            });
+        }
+
+        // Initialize display
+        updateDisplay();
+
+        // Auto-suggest points based on existing questions in category
+        document.getElementById('categoryName').addEventListener('input', function() {
+            const categoryName = this.value.trim();
+            const category = quizData.categories.find(cat => cat.name === categoryName);
+            
+            if (category && category.questions.length > 0) {
+                const maxPoints = Math.max(...category.questions.map(q => q.points));
+                document.getElementById('questionPoints').value = maxPoints + 100;
+            }
+        });
+    </script>
+</body>
+</html>
