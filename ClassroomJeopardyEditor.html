@@ -270,7 +270,7 @@
             
             <div class="form-group" style="margin-top: 30px;">
                 <label for="fileInput">Load JSON File</label>
-                <input type="file" id="fileInput" accept=".json" onchange="loadJSONFile(event)" 
+                <input type="file" id="fileInput" accept=".json" 
                        style="padding: 8px; border: 2px dashed #667eea; background: #f8f9fa;">
             </div>
 
@@ -491,8 +491,67 @@
             });
         }
 
+        function loadJSONFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
+                alert('Please select a valid JSON file');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+                    
+                    // Validate the JSON structure
+                    if (!jsonData.categories || !Array.isArray(jsonData.categories)) {
+                        throw new Error('Invalid JSON format: missing categories array');
+                    }
+                    
+                    // Validate each category
+                    jsonData.categories.forEach((category, index) => {
+                        if (!category.name || !category.questions || !Array.isArray(category.questions)) {
+                            throw new Error(`Invalid category format at index ${index}`);
+                        }
+                        
+                        category.questions.forEach((question, qIndex) => {
+                            if (!question.hasOwnProperty('points') || !question.question || !question.answer) {
+                                throw new Error(`Invalid question format in category "${category.name}" at question ${qIndex + 1}`);
+                            }
+                        });
+                    });
+                    
+                    // If validation passes, load the data
+                    quizData = jsonData;
+                    updateDisplay();
+                    
+                    // Clear the file input
+                    event.target.value = '';
+                    
+                    alert(`Successfully loaded ${quizData.categories.length} categories with ${quizData.categories.reduce((total, cat) => total + cat.questions.length, 0)} questions!`);
+                    
+                } catch (error) {
+                    alert(`Error loading JSON file: ${error.message}`);
+                    console.error('JSON parsing error:', error);
+                    event.target.value = ''; // Clear the file input
+                }
+            };
+            
+            reader.onerror = function() {
+                alert('Error reading file');
+                event.target.value = '';
+            };
+            
+            reader.readAsText(file);
+        }
+
         // Initialize display
         updateDisplay();
+
+        // Set up file input event listener
+        document.getElementById('fileInput').addEventListener('change', loadJSONFile);
 
         // Auto-suggest points based on existing questions in category
         document.getElementById('categoryName').addEventListener('input', function() {
